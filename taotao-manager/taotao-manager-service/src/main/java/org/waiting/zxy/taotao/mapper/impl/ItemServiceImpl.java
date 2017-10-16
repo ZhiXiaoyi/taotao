@@ -1,11 +1,14 @@
 package org.waiting.zxy.taotao.mapper.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.waiting.zxy.taotao.pojo.TbItem;
 import org.waiting.zxy.taotao.pojo.TbItemExample;
 import org.waiting.zxy.taotao.mapper.IItemService;
 import org.waiting.zxy.taotao.mapper.TbItemMapper;
+import org.waiting.zxy.util.pojo.EUDataGridResult;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ import java.util.List;
 public class ItemServiceImpl implements IItemService {
 
     @Autowired
-    private TbItemMapper itemMapper;
+    private TbItemMapper tbItemMapper;
 
     @Override
     public TbItem getItemById(Long itemId) {
@@ -28,10 +31,23 @@ public class ItemServiceImpl implements IItemService {
         TbItemExample tbItemExample =new TbItemExample();
         TbItemExample.Criteria criteria=tbItemExample.createCriteria();
         criteria.andIdEqualTo(itemId);
-        List<TbItem> tbItemList = itemMapper.selectByExample(tbItemExample);
+        List<TbItem> tbItemList = tbItemMapper.selectByExample(tbItemExample);
         if(tbItemList!=null && tbItemList.size()>0){
             return tbItemList.get(0);
         }
-        return itemMapper.selectByPrimaryKey(itemId);
+        return tbItemMapper.selectByPrimaryKey(itemId);
+    }
+
+    @Override
+    public EUDataGridResult getItemList(Integer page, Integer rows) {
+        //查询商品列表
+        TbItemExample tbItemExample =new TbItemExample();
+        PageHelper.startPage(page,rows);
+        List<TbItem> tbItemExampleList=tbItemMapper.selectByExample(tbItemExample);
+        EUDataGridResult euDataGridResult =new EUDataGridResult();
+        euDataGridResult.setRows(tbItemExampleList);
+        PageInfo<TbItem> tbItemPageInfo =new PageInfo<>(tbItemExampleList);
+        euDataGridResult.setTotal(tbItemPageInfo.getTotal());
+        return euDataGridResult;
     }
 }

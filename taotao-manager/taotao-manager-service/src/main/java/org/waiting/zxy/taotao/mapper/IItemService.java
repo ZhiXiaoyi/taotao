@@ -2,6 +2,7 @@ package org.waiting.zxy.taotao.mapper;
 
 
 import org.waiting.zxy.taotao.pojo.TbItem;
+import org.waiting.zxy.util.pojo.EUDataGridResult;
 
 /**
  * <p>
@@ -14,4 +15,6 @@ import org.waiting.zxy.taotao.pojo.TbItem;
 public interface IItemService{
 
     TbItem getItemById(Long itemId);
+
+    EUDataGridResult getItemList(Integer page ,Integer rows);
 }
